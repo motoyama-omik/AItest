@@ -37,4 +37,32 @@ public class UserService {
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
+    
+    /**
+     * 複数のユーザーを一括作成
+     */
+    public List<User> createUsersBatch(List<User> users) {
+        return userRepository.saveAll(users);
+    }
+    
+    /**
+     * ユーザー数を取得
+     */
+    public long getUserCount() {
+        return userRepository.count();
+    }
+    
+    /**
+     * メールアドレスでユーザーを検索（部分一致）
+     */
+    public List<User> findUsersByEmailContaining(String email) {
+        return userRepository.findByEmailContainingIgnoreCase(email);
+    }
+    
+    /**
+     * 名前でユーザーを検索（部分一致）
+     */
+    public List<User> findUsersByNameContaining(String name) {
+        return userRepository.findByNameContainingIgnoreCase(name);
+    }
 } 

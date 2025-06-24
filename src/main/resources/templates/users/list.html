@@ -23,6 +23,11 @@
             text-align: center;
             padding: 3rem 0;
         }
+        .search-form {
+            background-color: #f8f9fa;
+            border-radius: 0.375rem;
+            padding: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -67,17 +72,90 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
+        <!-- Created User Info -->
+        <div th:if="${createdUser}" class="alert alert-info alert-dismissible fade show" role="alert">
+            <h6 class="alert-heading">
+                <i class="fas fa-user-plus me-2"></i>新規ユーザーが作成されました
+            </h6>
+            <p class="mb-1">
+                <strong>名前:</strong> <span th:text="${createdUser.name}"></span><br>
+                <strong>メール:</strong> <span th:text="${createdUser.email}"></span><br>
+                <strong>ID:</strong> <span th:text="${createdUser.id}"></span>
+            </p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Created Users Info (Batch) -->
+        <div th:if="${createdUsers}" class="alert alert-info alert-dismissible fade show" role="alert">
+            <h6 class="alert-heading">
+                <i class="fas fa-users me-2"></i>一括ユーザー作成が完了しました
+            </h6>
+            <p class="mb-1">
+                <strong>作成数:</strong> <span th:text="${#lists.size(createdUsers)}"></span>人<br>
+                <strong>作成日時:</strong> <span th:text="${#dates.format(#dates.createNow(), 'yyyy/MM/dd HH:mm:ss')}"></span>
+            </p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
         <!-- Page Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h1 class="h3 mb-0">
                     <i class="fas fa-users me-2"></i>ユーザー一覧
                 </h1>
-                <p class="text-muted mb-0">登録されているユーザーの管理</p>
+                <p class="text-muted mb-0">
+                    登録されているユーザーの管理 
+                    <span class="badge bg-primary ms-2" th:text="${userCount} + '人'">0人</span>
+                </p>
             </div>
-            <a href="/users/new" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>新規ユーザー追加
-            </a>
+            <div class="btn-group" role="group">
+                <a href="/users/new" class="btn btn-primary">
+                    <i class="fas fa-user-plus me-2"></i>新規作成
+                </a>
+                <a href="/users/batch" class="btn btn-info">
+                    <i class="fas fa-users me-2"></i>一括作成
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Form -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/users/search}" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="searchName" class="form-label">
+                            <i class="fas fa-user me-2"></i>名前で検索
+                        </label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="searchName" 
+                               name="name"
+                               th:value="${searchName}"
+                               placeholder="名前の一部を入力">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="searchEmail" class="form-label">
+                            <i class="fas fa-envelope me-2"></i>メールで検索
+                        </label>
+                        <input type="email" 
+                               class="form-control" 
+                               id="searchEmail" 
+                               name="email"
+                               th:value="${searchEmail}"
+                               placeholder="メールアドレスの一部を入力">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <div class="btn-group w-100" role="group">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="fas fa-search me-2"></i>検索
+                            </button>
+                            <a href="/users" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>クリア
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Users Table -->
@@ -87,9 +165,14 @@
                     <i class="fas fa-users fa-3x text-muted mb-3"></i>
                     <h4 class="text-muted">ユーザーが登録されていません</h4>
                     <p class="text-muted mb-4">最初のユーザーを追加してみましょう</p>
-                    <a href="/users/new" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>新規ユーザーを追加
-                    </a>
+                    <div class="btn-group" role="group">
+                        <a href="/users/new" class="btn btn-primary">
+                            <i class="fas fa-user-plus me-2"></i>新規ユーザーを追加
+                        </a>
+                        <a href="/users/batch" class="btn btn-info">
+                            <i class="fas fa-users me-2"></i>一括作成
+                        </a>
+                    </div>
                 </div>
                 
                 <div th:if="${!#lists.isEmpty(users)}">

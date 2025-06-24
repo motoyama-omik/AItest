@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザー作成確認 - Spring Boot App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .btn {
+            border-radius: 0.375rem;
+        }
+        .info-row {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .info-value {
+            color: #212529;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-leaf me-2"></i>Spring Boot App
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i>ホーム
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/users">
+                            <i class="fas fa-users me-1"></i>ユーザー管理
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-4">
+        <!-- Page Header -->
+        <div class="mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/users">
+                            <i class="fas fa-users me-1"></i>ユーザー一覧
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/users/new">新規ユーザー作成</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">確認</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-check-circle me-2"></i>ユーザー作成確認
+                    </h1>
+                    <p class="text-muted mb-0">入力内容を確認してから作成を実行してください</p>
+                </div>
+                <a href="/users" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>戻る
+                </a>
+            </div>
+        </div>
+
+        <!-- Confirmation Card -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>作成するユーザー情報
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="p-4">
+                            <div class="row info-row">
+                                <div class="col-md-3 info-label">
+                                    <i class="fas fa-user me-2"></i>名前
+                                </div>
+                                <div class="col-md-9 info-value" th:text="${userCreateDto.name}">
+                                    ユーザー名
+                                </div>
+                            </div>
+                            
+                            <div class="row info-row">
+                                <div class="col-md-3 info-label">
+                                    <i class="fas fa-envelope me-2"></i>メールアドレス
+                                </div>
+                                <div class="col-md-9 info-value" th:text="${userCreateDto.email}">
+                                    user@example.com
+                                </div>
+                            </div>
+                            
+                            <div class="row info-row">
+                                <div class="col-md-3 info-label">
+                                    <i class="fas fa-lock me-2"></i>パスワード
+                                </div>
+                                <div class="col-md-9 info-value">
+                                    <span class="text-muted">••••••••</span>
+                                    <small class="text-muted ms-2">（セキュリティのため非表示）</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <a href="/users/new" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>修正する
+                            </a>
+                            <form th:action="@{/users/confirm}" th:object="${userCreateDto}" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save me-2"></i>ユーザーを作成
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Information Alert -->
+                <div class="alert alert-info mt-4" role="alert">
+                    <h6 class="alert-heading">
+                        <i class="fas fa-lightbulb me-2"></i>ご確認ください
+                    </h6>
+                    <ul class="mb-0">
+                        <li>上記の情報でユーザーを作成します</li>
+                        <li>作成後はユーザー一覧画面に戻ります</li>
+                        <li>メールアドレスは重複チェック済みです</li>
+                        <li>パスワードは暗号化して保存されます</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center text-muted py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">
+                <i class="fas fa-code me-1"></i>
+                Spring Boot Web Application &copy; 2024
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
