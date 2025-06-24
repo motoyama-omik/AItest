@@ -3,62 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ユーザー一覧 - Spring Boot App</title>
+    <title>ユーザー一覧 - ユーザー管理システム</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        .navbar-brand {
-            font-weight: bold;
+        :root {
+            --primary-color: #0066cc;
+            --primary-dark: #004499;
+            --primary-light: #e6f0ff;
+            --secondary-color: #f8f9fa;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
         }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
         .card {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
         }
-        .btn {
-            border-radius: 0.375rem;
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        }
+        
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .table {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
         .table th {
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 1rem;
         }
+        
+        .table td {
+            padding: 1rem;
+            border-color: var(--border-color);
+            vertical-align: middle;
+        }
+        
+        .alert {
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
+        }
+        
+        .form-control {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
         .empty-state {
             text-align: center;
-            padding: 3rem 0;
+            padding: 4rem 2rem;
         }
-        .search-form {
-            background-color: #f8f9fa;
-            border-radius: 0.375rem;
-            padding: 1rem;
+        
+        .empty-state i {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        
+        .stats-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 6px;
+        }
+        
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .modal-title {
+            font-weight: 600;
+        }
+        
+        .btn-close {
+            filter: invert(1);
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Page Header -->
+    <section class="page-header">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-leaf me-2"></i>Spring Boot App
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <i class="fas fa-home me-1"></i>ホーム
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="page-title">
+                        <i class="fas fa-users me-3"></i>ユーザー一覧
+                    </h1>
+                    <p class="page-subtitle mb-0">
+                        登録されているユーザーの管理と検索
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="d-flex gap-2 justify-content-md-end">
+                        <a href="/users/new" class="btn btn-light">
+                            <i class="fas fa-user-plus me-2"></i>新規作成
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/users">
-                            <i class="fas fa-users me-1"></i>ユーザー管理
+                        <a href="/users/batch" class="btn btn-outline-light">
+                            <i class="fas fa-users me-2"></i>一括作成
                         </a>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
+    </section>
 
     <!-- Main Content -->
-    <main class="container mt-4">
+    <main class="container">
         <!-- Flash Messages -->
         <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
@@ -97,30 +257,49 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="h3 mb-0">
-                    <i class="fas fa-users me-2"></i>ユーザー一覧
-                </h1>
-                <p class="text-muted mb-0">
-                    登録されているユーザーの管理 
-                    <span class="badge bg-primary ms-2" th:text="${userCount} + '人'">0人</span>
-                </p>
+        <!-- Stats Card -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="feature-icon mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">総ユーザー数</h5>
+                        <p class="card-text display-6 fw-bold text-primary" th:text="${userCount}">0</p>
+                    </div>
+                </div>
             </div>
-            <div class="btn-group" role="group">
-                <a href="/users/new" class="btn btn-primary">
-                    <i class="fas fa-user-plus me-2"></i>新規作成
-                </a>
-                <a href="/users/batch" class="btn btn-info">
-                    <i class="fas fa-users me-2"></i>一括作成
-                </a>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="feature-icon mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">検索結果</h5>
+                        <p class="card-text display-6 fw-bold text-primary" th:text="${#lists.size(users)}">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="feature-icon mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">最終更新</h5>
+                        <p class="card-text text-muted" th:text="${#dates.format(#dates.createNow(), 'MM/dd HH:mm')}">--</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Search Form -->
         <div class="card mb-4">
             <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="fas fa-search me-2"></i>ユーザー検索
+                </h5>
                 <form th:action="@{/users/search}" method="get" class="row g-3">
                     <div class="col-md-4">
                         <label for="searchName" class="form-label">
@@ -146,7 +325,7 @@
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <div class="btn-group w-100" role="group">
-                            <button type="submit" class="btn btn-outline-primary">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-search me-2"></i>検索
                             </button>
                             <a href="/users" class="btn btn-outline-secondary">
@@ -162,14 +341,14 @@
         <div class="card">
             <div class="card-body p-0">
                 <div th:if="${#lists.isEmpty(users)}" class="empty-state">
-                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                    <h4 class="text-muted">ユーザーが登録されていません</h4>
+                    <i class="fas fa-users fa-4x"></i>
+                    <h4 class="text-muted mb-3">ユーザーが登録されていません</h4>
                     <p class="text-muted mb-4">最初のユーザーを追加してみましょう</p>
-                    <div class="btn-group" role="group">
+                    <div class="d-flex gap-2 justify-content-center">
                         <a href="/users/new" class="btn btn-primary">
                             <i class="fas fa-user-plus me-2"></i>新規ユーザーを追加
                         </a>
-                        <a href="/users/batch" class="btn btn-info">
+                        <a href="/users/batch" class="btn btn-outline-primary">
                             <i class="fas fa-users me-2"></i>一括作成
                         </a>
                     </div>
@@ -192,15 +371,17 @@
                                     <td th:text="${user.name}">ユーザー名</td>
                                     <td th:text="${user.email}">user@example.com</td>
                                     <td class="text-center">
-                                        <div class="btn-group" role="group">
+                                        <div class="action-buttons">
                                             <a th:href="@{/users/{id}/edit(id=${user.id})}" 
-                                               class="btn btn-sm btn-outline-primary">
+                                               class="btn btn-sm btn-outline-primary"
+                                               title="編集">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <button type="button" 
                                                     class="btn btn-sm btn-outline-danger"
                                                     data-bs-toggle="modal" 
-                                                    th:data-bs-target="'#deleteModal' + ${user.id}">
+                                                    th:data-bs-target="'#deleteModal' + ${user.id}"
+                                                    title="削除">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
@@ -210,19 +391,29 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title">ユーザー削除の確認</h5>
+                                                        <h5 class="modal-title">
+                                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                                            ユーザー削除の確認
+                                                        </h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <p>以下のユーザーを削除しますか？</p>
-                                                        <ul class="list-unstyled">
-                                                            <li><strong>名前:</strong> <span th:text="${user.name}"></span></li>
-                                                            <li><strong>メール:</strong> <span th:text="${user.email}"></span></li>
-                                                        </ul>
-                                                        <p class="text-danger"><small>この操作は取り消せません。</small></p>
+                                                        <div class="alert alert-warning">
+                                                            <ul class="list-unstyled mb-0">
+                                                                <li><strong>名前:</strong> <span th:text="${user.name}"></span></li>
+                                                                <li><strong>メール:</strong> <span th:text="${user.email}"></span></li>
+                                                            </ul>
+                                                        </div>
+                                                        <p class="text-danger mb-0">
+                                                            <i class="fas fa-info-circle me-1"></i>
+                                                            この操作は取り消せません。
+                                                        </p>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            <i class="fas fa-times me-2"></i>キャンセル
+                                                        </button>
                                                         <form th:action="@{/users/{id}/delete(id=${user.id})}" method="post" style="display: inline;">
                                                             <button type="submit" class="btn btn-danger">
                                                                 <i class="fas fa-trash me-2"></i>削除
@@ -241,16 +432,6 @@
             </div>
         </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-light text-center text-muted py-4 mt-5">
-        <div class="container">
-            <p class="mb-0">
-                <i class="fas fa-code me-1"></i>
-                Spring Boot Web Application &copy; 2024
-            </p>
-        </div>
-    </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

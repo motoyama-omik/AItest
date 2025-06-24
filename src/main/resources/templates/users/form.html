@@ -3,61 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${user.id} ? 'ユーザー編集 - Spring Boot App' : 'ユーザー登録 - Spring Boot App'">ユーザー登録 - Spring Boot App</title>
+    <title th:text="${user.id} ? 'ユーザー編集 - ユーザー管理システム' : 'ユーザー登録 - ユーザー管理システム'">ユーザー登録 - ユーザー管理システム</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        .navbar-brand {
-            font-weight: bold;
+        :root {
+            --primary-color: #0066cc;
+            --primary-dark: #004499;
+            --primary-light: #e6f0ff;
+            --secondary-color: #f8f9fa;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
         }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
         .card {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
         }
-        .btn {
-            border-radius: 0.375rem;
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        }
+        
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-outline-secondary {
+            border-color: var(--border-color);
+            color: var(--text-muted);
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--border-color);
+            color: var(--text-dark);
+        }
+        
+        .form-control {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
         .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
         }
+        
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        
+        .form-control.is-invalid:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
         .invalid-feedback {
             display: block;
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .form-text {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .breadcrumb-item a:hover {
+            color: white;
+        }
+        
+        .breadcrumb-item.active {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        
+        .required-field {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .form-actions {
+            background: var(--secondary-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Page Header -->
+    <section class="page-header">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-leaf me-2"></i>Spring Boot App
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/">
                             <i class="fas fa-home me-1"></i>ホーム
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/users">
-                            <i class="fas fa-users me-1"></i>ユーザー管理
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="container mt-4">
-        <!-- Page Header -->
-        <div class="mb-4">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="/users">
                             <i class="fas fa-users me-1"></i>ユーザー一覧
@@ -69,25 +198,30 @@
                 </ol>
             </nav>
             
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="h3 mb-0">
-                        <i class="fas fa-user-plus me-2" th:if="${!user.id}"></i>
-                        <i class="fas fa-user-edit me-2" th:if="${user.id}"></i>
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="page-title">
+                        <i class="fas fa-user-plus me-3" th:if="${!user.id}"></i>
+                        <i class="fas fa-user-edit me-3" th:if="${user.id}"></i>
                         <span th:text="${user.id} ? 'ユーザー編集' : 'ユーザー登録'">ユーザー登録</span>
                     </h1>
-                    <p class="text-muted mb-0">
+                    <p class="page-subtitle mb-0">
                         <span th:text="${user.id} ? 'ユーザー情報を編集します' : '新しいユーザーを登録します'">
                             新しいユーザーを登録します
                         </span>
                     </p>
                 </div>
-                <a href="/users" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>戻る
-                </a>
+                <div class="col-md-4 text-md-end">
+                    <a href="/users" class="btn btn-outline-light">
+                        <i class="fas fa-arrow-left me-2"></i>ユーザー一覧に戻る
+                    </a>
+                </div>
             </div>
         </div>
+    </section>
 
+    <!-- Main Content -->
+    <main class="container">
         <!-- User Form -->
         <div class="row justify-content-center">
             <div class="col-lg-8">
@@ -97,9 +231,9 @@
                               th:object="${user}" method="post">
                             
                             <!-- Name Field -->
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label for="name" class="form-label">
-                                    <i class="fas fa-user me-2"></i>名前 <span class="text-danger">*</span>
+                                    <i class="fas fa-user me-2"></i>名前 <span class="required-field">*</span>
                                 </label>
                                 <input type="text" 
                                        class="form-control" 
@@ -113,9 +247,9 @@
                             </div>
 
                             <!-- Email Field -->
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label for="email" class="form-label">
-                                    <i class="fas fa-envelope me-2"></i>メールアドレス <span class="text-danger">*</span>
+                                    <i class="fas fa-envelope me-2"></i>メールアドレス <span class="required-field">*</span>
                                 </label>
                                 <input type="email" 
                                        class="form-control" 
@@ -131,7 +265,7 @@
                             <!-- Password Field -->
                             <div class="mb-4">
                                 <label for="password" class="form-label">
-                                    <i class="fas fa-lock me-2"></i>パスワード <span class="text-danger">*</span>
+                                    <i class="fas fa-lock me-2"></i>パスワード <span class="required-field">*</span>
                                 </label>
                                 <input type="password" 
                                        class="form-control" 
@@ -149,14 +283,16 @@
                             </div>
 
                             <!-- Form Actions -->
-                            <div class="d-flex justify-content-between">
-                                <a href="/users" class="btn btn-outline-secondary">
-                                    <i class="fas fa-times me-2"></i>キャンセル
-                                </a>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>
-                                    <span th:text="${user.id} ? '更新' : '登録'">登録</span>
-                                </button>
+                            <div class="form-actions">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="/users" class="btn btn-outline-secondary">
+                                        <i class="fas fa-times me-2"></i>キャンセル
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>
+                                        <span th:text="${user.id} ? '更新' : '登録'">登録</span>
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -164,16 +300,6 @@
             </div>
         </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-light text-center text-muted py-4 mt-5">
-        <div class="container">
-            <p class="mb-0">
-                <i class="fas fa-code me-1"></i>
-                Spring Boot Web Application &copy; 2024
-            </p>
-        </div>
-    </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
