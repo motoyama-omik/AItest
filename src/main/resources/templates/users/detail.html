@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::content})}">
+<head>
+    <title>ユーザー詳細 - オーミック ユーザー管理システム</title>
+</head>
+<body>
+    <section th:fragment="content" class="container" style="max-width: 600px; margin: 40px auto; background: var(--background-secondary, #fff); border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 2.5rem;">
+        <h1 style="font-size: 2rem; font-weight: bold; color: var(--primary, #4B2E83); margin-bottom: 2rem;">
+            <i class="fas fa-user me-2" aria-hidden="true"></i>ユーザー詳細
+        </h1>
+        <dl style="font-size: 1.1rem; margin-bottom: 2rem;">
+            <dt style="font-weight: bold; color: var(--primary, #4B2E83);">ID</dt>
+            <dd th:text="${user.id}" style="margin-bottom: 1rem;"></dd>
+            <dt style="font-weight: bold; color: var(--primary, #4B2E83);">名前</dt>
+            <dd th:text="${user.name}" style="margin-bottom: 1rem;"></dd>
+            <dt style="font-weight: bold; color: var(--primary, #4B2E83);">メール</dt>
+            <dd th:text="${user.email}" style="margin-bottom: 1rem;"></dd>
+        </dl>
+        <a href="/users" class="btn btn-outline-primary" style="text-decoration: none; color: var(--primary, #4B2E83); border: 1px solid var(--primary, #4B2E83); padding: 0.5rem 1.5rem; border-radius: 6px; font-weight: bold; transition: background 0.2s, color 0.2s;">
+            <i class="fas fa-arrow-left me-1" aria-hidden="true"></i>一覧に戻る
+        </a>
+    </section>
+</body>
+</html> 

@@ -173,6 +173,16 @@ public class UserController {
         return "users/list";
     }
     
+    @GetMapping("/{id}")
+    public String showUserDetail(@PathVariable Long id, Model model) {
+        return userService.getUserById(id)
+                .map(user -> {
+                    model.addAttribute("user", user);
+                    return "users/detail";
+                })
+                .orElse("redirect:/users");
+    }
+    
     /**
      * CSV形式の文字列をパースしてユーザーリストを作成
      */

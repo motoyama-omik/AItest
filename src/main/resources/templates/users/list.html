@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::content})}">
 <head>
     <title>ユーザー一覧 - オーミック ユーザー管理システム</title>
 </head>
 <body>
-    <section>
+    <section th:fragment="content">
         <!-- Page Header -->
         <div class="page-header" style="background: var(--bg-gradient); color: var(--text-light); padding: var(--spacing-xl) 0; margin-bottom: var(--spacing-xl);">
             <div class="container">
@@ -98,10 +98,6 @@
                                     メールアドレス
                                 </th>
                                 <th scope="col" style="border: none; padding: var(--spacing-lg);">
-                                    <i class="fas fa-calendar me-2" aria-hidden="true"></i>
-                                    登録日
-                                </th>
-                                <th scope="col" style="border: none; padding: var(--spacing-lg);">
                                     <i class="fas fa-cogs me-2" aria-hidden="true"></i>
                                     操作
                                 </th>
@@ -122,9 +118,6 @@
                                 </td>
                                 <td style="padding: var(--spacing-lg); border-color: var(--border-light);">
                                     <div class="user-email" style="color: var(--text-dark);" th:text="${user.email}">user@example.com</div>
-                                </td>
-                                <td style="padding: var(--spacing-lg); border-color: var(--border-light);">
-                                    <div class="user-created" style="color: var(--text-muted); font-size: 0.9rem;" th:text="${#temporals.format(user.createdAt, 'yyyy/MM/dd HH:mm')}">2024/01/01 12:00</div>
                                 </td>
                                 <td style="padding: var(--spacing-lg); border-color: var(--border-light);">
                                     <div class="user-actions" style="display: flex; gap: var(--spacing-sm);">
