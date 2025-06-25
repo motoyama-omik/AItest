@@ -1,225 +1,478 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="効率的で安全なユーザー管理を実現するモダンなWebアプリケーション">
+    <meta name="theme-color" content="#0066cc">
     <title th:text="${title} ? ${title} + ' - ユーザー管理システム' : 'ユーザー管理システム'">ユーザー管理システム</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" as="style">
+    
+    <!-- Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
+            /* Light theme colors */
             --primary-color: #0066cc;
             --primary-dark: #004499;
             --primary-light: #e6f0ff;
             --secondary-color: #f8f9fa;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            
+            /* Text colors */
             --text-dark: #333333;
             --text-muted: #666666;
+            --text-light: #ffffff;
+            
+            /* Background colors */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-dark: #2c3e50;
+            
+            /* Border colors */
             --border-color: #e0e0e0;
+            --border-light: #f0f0f0;
+            
+            /* Shadow colors */
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.12);
+            --shadow-heavy: rgba(0, 0, 0, 0.2);
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border radius */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-pill: 50px;
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+        
+        /* Dark theme */
+        [data-theme="dark"] {
+            --primary-color: #4dabf7;
+            --primary-dark: #1976d2;
+            --primary-light: #e3f2fd;
+            --secondary-color: #2d3748;
+            --text-dark: #e2e8f0;
+            --text-muted: #a0aec0;
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --bg-dark: #171923;
+            --border-color: #4a5568;
+            --border-light: #2d3748;
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-medium: rgba(0, 0, 0, 0.4);
+            --shadow-heavy: rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Base styles */
+        * {
+            box-sizing: border-box;
         }
         
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             color: var(--text-dark);
             line-height: 1.6;
+            background-color: var(--bg-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            scroll-behavior: smooth;
         }
         
+        /* Focus styles for accessibility */
+        *:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+        
+        /* Skip to main content link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            z-index: 1000;
+            transition: top var(--transition-normal);
+        }
+        
+        .skip-link:focus {
+            top: 6px;
+        }
+        
+        /* Navigation */
         .navbar {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%) !important;
-            box-shadow: 0 2px 10px rgba(0, 102, 204, 0.1);
-            padding: 1rem 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 4px 20px var(--shadow-medium);
+            padding: var(--spacing-md) 0;
+            transition: all var(--transition-normal);
+            backdrop-filter: blur(10px);
         }
         
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
-            color: white !important;
+            color: var(--text-light) !important;
+            text-decoration: none;
+            transition: transform var(--transition-normal);
+        }
+        
+        .navbar-brand:hover {
+            transform: scale(1.05);
         }
         
         .navbar-nav .nav-link {
             color: rgba(255, 255, 255, 0.9) !important;
             font-weight: 500;
-            padding: 0.5rem 1rem !important;
-            border-radius: 6px;
-            transition: all 0.3s ease;
+            padding: var(--spacing-sm) var(--spacing-md) !important;
+            border-radius: var(--radius-md);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .navbar-nav .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: left var(--transition-normal);
+        }
+        
+        .navbar-nav .nav-link:hover::before,
+        .navbar-nav .nav-link.active::before {
+            left: 0;
         }
         
         .navbar-nav .nav-link:hover,
         .navbar-nav .nav-link.active {
-            color: white !important;
-            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light) !important;
+            transform: translateY(-2px);
         }
         
+        /* Theme toggle button */
+        .theme-toggle {
+            background: none;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: var(--radius-pill);
+            padding: var(--spacing-sm) var(--spacing-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            margin-left: var(--spacing-md);
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+        
+        /* Cards */
         .card {
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 20px var(--shadow-light);
+            transition: all var(--transition-normal);
+            background: var(--bg-primary);
+            overflow: hidden;
         }
         
         .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px var(--shadow-medium);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--text-light);
+            border: none;
+            padding: var(--spacing-lg);
+            font-weight: 600;
+        }
+        
+        /* Buttons */
+        .btn {
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width var(--transition-normal), height var(--transition-normal);
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
         
         .btn-primary {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s ease;
+            color: var(--text-light);
         }
         
         .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.4);
         }
         
         .btn-outline-primary {
-            border-color: var(--primary-color);
+            border: 2px solid var(--primary-color);
             color: var(--primary-color);
-            border-radius: 8px;
-            font-weight: 500;
+            background: transparent;
         }
         
         .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: var(--text-light);
+            transform: translateY(-2px);
         }
         
+        /* Tables */
         .table {
-            border-radius: 12px;
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px var(--shadow-light);
+            background: var(--bg-primary);
         }
         
         .table th {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
+            color: var(--text-light);
             font-weight: 600;
             border: none;
-            padding: 1rem;
+            padding: var(--spacing-lg);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         
         .table td {
-            padding: 1rem;
-            border-color: var(--border-color);
+            padding: var(--spacing-lg);
+            border-color: var(--border-light);
             vertical-align: middle;
+            transition: background-color var(--transition-fast);
         }
         
+        .table tbody tr:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* Alerts */
         .alert {
             border: none;
-            border-radius: 12px;
+            border-radius: var(--radius-lg);
             font-weight: 500;
+            padding: var(--spacing-lg);
+            margin: var(--spacing-md);
+            animation: slideInDown 0.5s ease;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
         
         .alert-success {
             background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
+            border-left: 4px solid var(--success-color);
         }
         
         .alert-danger {
             background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
             color: #721c24;
+            border-left: 4px solid var(--danger-color);
         }
         
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
+            border-left: 4px solid var(--info-color);
+        }
+        
+        /* Forms */
         .form-control {
             border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            transition: all var(--transition-normal);
+            background: var(--bg-primary);
+            color: var(--text-dark);
         }
         
         .form-control:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+            transform: translateY(-1px);
         }
         
         .form-label {
             font-weight: 600;
             color: var(--text-dark);
-            margin-bottom: 0.5rem;
+            margin-bottom: var(--spacing-sm);
         }
         
-        footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            padding: 2rem 0;
-            margin-top: 4rem;
-        }
-        
-        .hero-section {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 4rem 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            opacity: 0.3;
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            color: white;
-            font-size: 2rem;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
         }
         
-        .section-title {
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 1rem;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
-        .section-subtitle {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            margin-bottom: 3rem;
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #34495e 100%);
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0;
+            margin-top: var(--spacing-xxl);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .card {
+                margin-bottom: var(--spacing-lg);
+            }
+            
+            .table-responsive {
+                border-radius: var(--radius-lg);
+                overflow: hidden;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            .navbar, footer, .btn, .alert {
+                display: none !important;
+            }
+            
+            .card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+        }
+        
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            :root {
+                --primary-color: #000080;
+                --text-dark: #000000;
+                --border-color: #000000;
+            }
+        }
+        
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">メインコンテンツにスキップ</a>
+    
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark" role="navigation" aria-label="メインナビゲーション">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-users me-2"></i>ユーザー管理システム
+            <a class="navbar-brand" href="/" aria-label="ホームページ">
+                <i class="fas fa-users me-2" aria-hidden="true"></i>ユーザー管理システム
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="ナビゲーションメニューを切り替え">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <i class="fas fa-home me-1"></i>ホーム
+                        <a class="nav-link" href="/" aria-label="ホームページ">
+                            <i class="fas fa-home me-1" aria-hidden="true"></i>ホーム
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/users">
-                            <i class="fas fa-users me-1"></i>ユーザー管理
+                        <a class="nav-link" href="/users" aria-label="ユーザー管理ページ">
+                            <i class="fas fa-users me-1" aria-hidden="true"></i>ユーザー管理
                         </a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="theme-toggle" id="themeToggle" aria-label="テーマを切り替え">
+                            <i class="fas fa-moon" id="themeIcon"></i>
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -227,18 +480,18 @@
     </nav>
 
     <!-- Main Content -->
-    <main>
+    <main id="main-content" role="main">
         <!-- Flash Messages -->
-        <div th:if="${message}" class="alert alert-success alert-dismissible fade show m-3" role="alert">
-            <i class="fas fa-check-circle me-2"></i>
+        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert" aria-live="polite">
+            <i class="fas fa-check-circle me-2" aria-hidden="true"></i>
             <span th:text="${message}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="アラートを閉じる"></button>
         </div>
         
-        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show m-3" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" aria-live="polite">
+            <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>
             <span th:text="${error}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="アラートを閉じる"></button>
         </div>
 
         <!-- Page Content -->
@@ -248,7 +501,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="text-center">
+    <footer class="text-center" role="contentinfo">
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-md-start">
@@ -257,7 +510,7 @@
                 </div>
                 <div class="col-md-6 text-md-end">
                     <p class="mb-0">
-                        <i class="fas fa-code me-1"></i>
+                        <i class="fas fa-code me-1" aria-hidden="true"></i>
                         &copy; 2024 ユーザー管理システム. All rights reserved.
                     </p>
                 </div>
@@ -267,5 +520,71 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Theme toggle script -->
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const body = document.body;
+        
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        body.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+                themeToggle.setAttribute('aria-label', 'ライトモードに切り替え');
+            } else {
+                themeIcon.className = 'fas fa-moon';
+                themeToggle.setAttribute('aria-label', 'ダークモードに切り替え');
+            }
+        }
+        
+        // Add loading states to buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!this.classList.contains('btn-close')) {
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '<span class="loading-spinner me-2"></span>処理中...';
+                        this.disabled = true;
+                        
+                        // Re-enable after a delay (for demo purposes)
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.disabled = false;
+                        }, 2000);
+                    }
+                });
+            });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html> 

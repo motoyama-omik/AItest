@@ -1,35 +1,116 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="効率的で安全なユーザー管理を実現するモダンなWebアプリケーション">
+    <meta name="theme-color" content="#0066cc">
     <title th:text="${title}">ユーザー管理システム</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" as="style">
+    
+    <!-- Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
+            /* Light theme colors */
             --primary-color: #0066cc;
             --primary-dark: #004499;
             --primary-light: #e6f0ff;
             --secondary-color: #f8f9fa;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            
+            /* Text colors */
             --text-dark: #333333;
             --text-muted: #666666;
+            --text-light: #ffffff;
+            
+            /* Background colors */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-dark: #2c3e50;
+            
+            /* Border colors */
             --border-color: #e0e0e0;
+            --border-light: #f0f0f0;
+            
+            /* Shadow colors */
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.12);
+            --shadow-heavy: rgba(0, 0, 0, 0.2);
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border radius */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-pill: 50px;
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+        
+        /* Dark theme */
+        [data-theme="dark"] {
+            --primary-color: #4dabf7;
+            --primary-dark: #1976d2;
+            --primary-light: #e3f2fd;
+            --secondary-color: #2d3748;
+            --text-dark: #e2e8f0;
+            --text-muted: #a0aec0;
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --bg-dark: #171923;
+            --border-color: #4a5568;
+            --border-light: #2d3748;
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-medium: rgba(0, 0, 0, 0.4);
+            --shadow-heavy: rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Base styles */
+        * {
+            box-sizing: border-box;
         }
         
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             color: var(--text-dark);
             line-height: 1.6;
+            background-color: var(--bg-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            scroll-behavior: smooth;
         }
         
+        /* Hero Section */
         .hero-section {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 6rem 0;
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0;
             position: relative;
             overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
         }
         
         .hero-section::before {
@@ -41,37 +122,78 @@
             bottom: 0;
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
             opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
         }
         
         .hero-content {
             position: relative;
             z-index: 1;
+            text-align: center;
         }
         
         .hero-title {
-            font-size: 3.5rem;
+            font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 700;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: var(--spacing-lg);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease-out;
         }
         
         .hero-subtitle {
-            font-size: 1.3rem;
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
             font-weight: 400;
-            margin-bottom: 2.5rem;
+            margin-bottom: var(--spacing-xxl);
             opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.2s both;
         }
         
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Feature Cards */
         .feature-card {
-            transition: all 0.3s ease;
+            transition: all var(--transition-normal);
             border: none;
-            border-radius: 16px;
+            border-radius: var(--radius-xl);
             overflow: hidden;
+            background: var(--bg-primary);
+            box-shadow: 0 8px 32px var(--shadow-light);
+            position: relative;
+            height: 100%;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color), var(--warning-color));
+            transform: scaleX(0);
+            transition: transform var(--transition-normal);
+        }
+        
+        .feature-card:hover::before {
+            transform: scaleX(1);
         }
         
         .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px var(--shadow-medium);
         }
         
         .feature-icon {
@@ -82,76 +204,136 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1.5rem;
-            color: white;
+            margin: 0 auto var(--spacing-lg);
+            color: var(--text-light);
             font-size: 2rem;
             box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+            transition: all var(--transition-normal);
         }
         
-        .section-title {
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 30px rgba(0, 102, 204, 0.4);
+        }
+        
+        .feature-title {
             font-weight: 700;
             color: var(--text-dark);
-            margin-bottom: 1rem;
-            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+            font-size: 1.3rem;
         }
         
-        .section-subtitle {
+        .feature-description {
             color: var(--text-muted);
-            font-size: 1.2rem;
-            margin-bottom: 4rem;
+            line-height: 1.6;
         }
         
+        /* Buttons */
         .btn-hero {
-            padding: 1rem 2rem;
+            padding: var(--spacing-md) var(--spacing-xl);
             font-size: 1.1rem;
             font-weight: 600;
-            border-radius: 50px;
-            transition: all 0.3s ease;
+            border-radius: var(--radius-pill);
+            transition: all var(--transition-normal);
             text-decoration: none;
             display: inline-block;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+        
+        .btn-hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width var(--transition-normal), height var(--transition-normal);
+        }
+        
+        .btn-hero:hover::before {
+            width: 300px;
+            height: 300px;
         }
         
         .btn-hero-primary {
-            background: white;
+            background: var(--text-light);
             color: var(--primary-color);
-            border: 2px solid white;
+            border-color: var(--text-light);
         }
         
         .btn-hero-primary:hover {
             background: transparent;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+            color: var(--text-light);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 255, 255, 0.3);
         }
         
         .btn-hero-outline {
             background: transparent;
-            color: white;
-            border: 2px solid white;
+            color: var(--text-light);
+            border-color: var(--text-light);
         }
         
         .btn-hero-outline:hover {
-            background: white;
+            background: var(--text-light);
             color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 255, 255, 0.3);
         }
         
+        /* Stats Section */
         .stats-section {
-            background: var(--secondary-color);
-            padding: 4rem 0;
+            background: var(--bg-secondary);
+            padding: var(--spacing-xxl) 0;
+            position: relative;
+        }
+        
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 102, 204, 0.05) 50%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
         }
         
         .stat-item {
             text-align: center;
-            padding: 2rem 1rem;
+            padding: var(--spacing-xl) var(--spacing-md);
+            position: relative;
+            z-index: 1;
         }
         
         .stat-number {
-            font-size: 3rem;
+            font-size: clamp(2rem, 4vw, 3rem);
             font-weight: 700;
             color: var(--primary-color);
-            margin-bottom: 0.5rem;
+            margin-bottom: var(--spacing-sm);
+            display: block;
+            animation: countUp 2s ease-out;
+        }
+        
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .stat-label {
@@ -160,99 +342,236 @@
             font-weight: 500;
         }
         
+        /* CTA Section */
         .cta-section {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            padding: 4rem 0;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #34495e 100%);
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: backgroundMove 20s linear infinite;
+        }
+        
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
         }
         
         .cta-title {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vw, 2.5rem);
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: var(--spacing-lg);
         }
         
         .cta-subtitle {
             font-size: 1.2rem;
-            margin-bottom: 2rem;
+            margin-bottom: var(--spacing-xl);
             opacity: 0.9;
+        }
+        
+        /* Section titles */
+        .section-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-md);
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            text-align: center;
+        }
+        
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-bottom: var(--spacing-xxl);
+            text-align: center;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: var(--spacing-xl) 0;
+                min-height: 80vh;
+            }
+            
+            .btn-hero {
+                display: block;
+                margin-bottom: var(--spacing-md);
+                text-align: center;
+            }
+            
+            .feature-card {
+                margin-bottom: var(--spacing-lg);
+            }
+            
+            .stat-item {
+                margin-bottom: var(--spacing-lg);
+            }
+        }
+        
+        /* Loading animation */
+        .loading-dots {
+            display: inline-block;
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+        
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: var(--spacing-lg);
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-light);
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
         }
     </style>
 </head>
 <body>
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section" role="banner">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-8 mx-auto text-center hero-content">
+                <div class="col-lg-8 mx-auto hero-content">
                     <h1 class="hero-title">
-                        <i class="fas fa-users me-3"></i>
+                        <i class="fas fa-users me-3" aria-hidden="true"></i>
                         <span th:text="${title}">ユーザー管理システム</span>
                     </h1>
                     <p class="hero-subtitle" th:text="${message}">
                         効率的で安全なユーザー管理を実現するモダンなWebアプリケーション
                     </p>
                     <div class="d-flex justify-content-center gap-4 flex-wrap">
-                        <a href="/users" class="btn-hero btn-hero-primary">
-                            <i class="fas fa-users me-2"></i>ユーザー管理を開始
+                        <a href="/users" class="btn-hero btn-hero-primary" role="button">
+                            <i class="fas fa-users me-2" aria-hidden="true"></i>ユーザー管理を開始
                         </a>
-                        <a href="/users/new" class="btn-hero btn-hero-outline">
-                            <i class="fas fa-plus me-2"></i>新規ユーザー登録
+                        <a href="/users/new" class="btn-hero btn-hero-outline" role="button">
+                            <i class="fas fa-plus me-2" aria-hidden="true"></i>新規ユーザー登録
                         </a>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
     </section>
 
     <!-- Features Section -->
-    <section class="py-5">
+    <section class="py-5" role="region" aria-labelledby="features-title">
         <div class="container">
-            <div class="row text-center mb-5">
-                <div class="col-lg-8 mx-auto">
-                    <h2 class="section-title">主な機能</h2>
-                    <p class="section-subtitle">Spring Bootの最新技術を活用した高機能なユーザー管理システム</p>
+            <div class="row">
+                <div class="col-12">
+                    <h2 id="features-title" class="section-title">主な機能</h2>
+                    <p class="section-subtitle">ユーザー管理に必要な機能をすべて提供します</p>
                 </div>
             </div>
-            
             <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card h-100 feature-card">
-                        <div class="card-body text-center p-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
                             <div class="feature-icon">
-                                <i class="fas fa-database"></i>
+                                <i class="fas fa-user-plus" aria-hidden="true"></i>
                             </div>
-                            <h5 class="card-title fw-bold mb-3">データベース管理</h5>
-                            <p class="card-text text-muted">
-                                Spring Data JPAを使用した効率的なデータベース操作とH2インメモリデータベースによる高速な開発環境
+                            <h3 class="feature-title">ユーザー登録</h3>
+                            <p class="feature-description">
+                                簡単で直感的なユーザー登録機能。必要な情報を入力するだけで、すぐにユーザーを追加できます。
                             </p>
                         </div>
                     </div>
                 </div>
-                
-                <div class="col-md-4">
-                    <div class="card h-100 feature-card">
-                        <div class="card-body text-center p-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
                             <div class="feature-icon">
-                                <i class="fas fa-shield-alt"></i>
+                                <i class="fas fa-search" aria-hidden="true"></i>
                             </div>
-                            <h5 class="card-title fw-bold mb-3">セキュリティ</h5>
-                            <p class="card-text text-muted">
-                                Bean Validationを使用した堅牢なデータ検証機能とセキュアなパスワード管理
+                            <h3 class="feature-title">検索・フィルタ</h3>
+                            <p class="feature-description">
+                                名前やメールアドレスでの検索機能。大量のユーザーデータから素早く目的のユーザーを見つけられます。
                             </p>
                         </div>
                     </div>
                 </div>
-                
-                <div class="col-md-4">
-                    <div class="card h-100 feature-card">
-                        <div class="card-body text-center p-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
                             <div class="feature-icon">
-                                <i class="fas fa-palette"></i>
+                                <i class="fas fa-shield-alt" aria-hidden="true"></i>
                             </div>
-                            <h5 class="card-title fw-bold mb-3">モダンUI</h5>
-                            <p class="card-text text-muted">
-                                Bootstrap 5とFont Awesomeを使用したレスポンシブで美しいユーザーインターフェース
+                            <h3 class="feature-title">セキュリティ</h3>
+                            <p class="feature-description">
+                                最新のセキュリティ技術を採用。ユーザーデータの安全な管理と保護を実現します。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-mobile-alt" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="feature-title">レスポンシブ</h3>
+                            <p class="feature-description">
+                                スマートフォンやタブレットなど、あらゆるデバイスで快適に利用できるレスポンシブデザイン。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="feature-title">統計情報</h3>
+                            <p class="feature-description">
+                                ユーザー数の推移や登録状況を視覚的に確認できる統計機能を提供します。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card feature-card h-100">
+                        <div class="card-body text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-download" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="feature-title">データエクスポート</h3>
+                            <p class="feature-description">
+                                ユーザーデータをCSV形式でエクスポート。他のシステムとの連携も簡単です。
                             </p>
                         </div>
                     </div>
@@ -262,25 +581,36 @@
     </section>
 
     <!-- Stats Section -->
-    <section class="stats-section">
+    <section class="stats-section" role="region" aria-labelledby="stats-title">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-12">
+                    <h2 id="stats-title" class="section-title">システム統計</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6">
                     <div class="stat-item">
-                        <div class="stat-number">100%</div>
-                        <div class="stat-label">レスポンシブ対応</div>
+                        <span class="stat-number" data-target="150">0</span>
+                        <div class="stat-label">登録ユーザー数</div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-lg-3 col-md-6">
                     <div class="stat-item">
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label">稼働時間</div>
+                        <span class="stat-number" data-target="99">0</span>
+                        <div class="stat-label">稼働率 (%)</div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-lg-3 col-md-6">
                     <div class="stat-item">
-                        <div class="stat-number">99.9%</div>
-                        <div class="stat-label">可用性</div>
+                        <span class="stat-number" data-target="24">0</span>
+                        <div class="stat-label">サポート時間</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="5">0</span>
+                        <div class="stat-label">対応デバイス</div>
                     </div>
                 </div>
             </div>
@@ -288,22 +618,111 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container text-center">
-            <h3 class="cta-title">今すぐ始めましょう</h3>
-            <p class="cta-subtitle">効率的なユーザー管理で、あなたのビジネスを次のレベルへ</p>
-            <div class="d-flex justify-content-center gap-3 flex-wrap">
-                <a href="/users" class="btn btn-light btn-lg px-4 py-3">
-                    <i class="fas fa-list me-2"></i>ユーザー一覧を表示
-                </a>
-                <a href="/users/new" class="btn btn-outline-light btn-lg px-4 py-3">
-                    <i class="fas fa-user-plus me-2"></i>新規ユーザーを追加
-                </a>
+    <section class="cta-section" role="region" aria-labelledby="cta-title">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto cta-content">
+                    <h2 id="cta-title" class="cta-title">今すぐ始めましょう</h2>
+                    <p class="cta-subtitle">
+                        ユーザー管理システムを導入して、効率的なユーザー管理を実現しませんか？
+                    </p>
+                    <div class="d-flex justify-content-center gap-4 flex-wrap">
+                        <a href="/users" class="btn-hero btn-hero-primary" role="button">
+                            <i class="fas fa-rocket me-2" aria-hidden="true"></i>今すぐ開始
+                        </a>
+                        <a href="/users/new" class="btn-hero btn-hero-outline" role="button">
+                            <i class="fas fa-user-plus me-2" aria-hidden="true"></i>ユーザーを追加
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Animate numbers on scroll
+        function animateNumbers() {
+            const numbers = document.querySelectorAll('.stat-number');
+            numbers.forEach(number => {
+                const target = parseInt(number.getAttribute('data-target'));
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    number.textContent = Math.floor(current);
+                }, 16);
+            });
+        }
+        
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    
+                    if (entry.target.classList.contains('stat-number')) {
+                        animateNumbers();
+                        observer.unobserve(entry.target);
+                    }
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements for animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.feature-card, .stat-number, .section-title, .section-subtitle');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add loading animation to buttons
+        document.querySelectorAll('.btn-hero').forEach(button => {
+            button.addEventListener('click', function() {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<span class="loading-dots">処理中</span>';
+                this.disabled = true;
+                
+                // Re-enable after navigation (for demo purposes)
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }, 3000);
+            });
+        });
+    </script>
 </body>
 </html> 

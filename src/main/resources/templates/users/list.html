@@ -1,216 +1,517 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ユーザー一覧 - 効率的なユーザー管理システム">
+    <meta name="theme-color" content="#0066cc">
     <title>ユーザー一覧 - ユーザー管理システム</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" as="style">
+    
+    <!-- Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
+            /* Light theme colors */
             --primary-color: #0066cc;
             --primary-dark: #004499;
             --primary-light: #e6f0ff;
             --secondary-color: #f8f9fa;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            
+            /* Text colors */
             --text-dark: #333333;
             --text-muted: #666666;
+            --text-light: #ffffff;
+            
+            /* Background colors */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-dark: #2c3e50;
+            
+            /* Border colors */
             --border-color: #e0e0e0;
+            --border-light: #f0f0f0;
+            
+            /* Shadow colors */
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.12);
+            --shadow-heavy: rgba(0, 0, 0, 0.2);
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Border radius */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-pill: 50px;
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+        
+        /* Dark theme */
+        [data-theme="dark"] {
+            --primary-color: #4dabf7;
+            --primary-dark: #1976d2;
+            --primary-light: #e3f2fd;
+            --secondary-color: #2d3748;
+            --text-dark: #e2e8f0;
+            --text-muted: #a0aec0;
+            --bg-primary: #1a202c;
+            --bg-secondary: #2d3748;
+            --bg-dark: #171923;
+            --border-color: #4a5568;
+            --border-light: #2d3748;
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-medium: rgba(0, 0, 0, 0.4);
+            --shadow-heavy: rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Base styles */
+        * {
+            box-sizing: border-box;
         }
         
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             color: var(--text-dark);
             line-height: 1.6;
+            background-color: var(--bg-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
         }
         
+        /* Page Header */
         .page-header {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 3rem 0;
-            margin-bottom: 2rem;
+            color: var(--text-light);
+            padding: var(--spacing-xxl) 0;
+            margin-bottom: var(--spacing-xl);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
         }
         
         .page-title {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vw, 2.5rem);
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            margin-bottom: var(--spacing-sm);
+            position: relative;
+            z-index: 1;
         }
         
         .page-subtitle {
             font-size: 1.1rem;
             opacity: 0.9;
-        }
-        
-        .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
-        }
-        
-        .btn-outline-primary {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-            border-radius: 8px;
-            font-weight: 500;
-        }
-        
-        .btn-outline-primary:hover {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .table {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-        
-        .table th {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            font-weight: 600;
-            border: none;
-            padding: 1rem;
-        }
-        
-        .table td {
-            padding: 1rem;
-            border-color: var(--border-color);
-            vertical-align: middle;
-        }
-        
-        .alert {
-            border: none;
-            border-radius: 12px;
-            font-weight: 500;
-        }
-        
-        .alert-success {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            color: #155724;
-        }
-        
-        .alert-danger {
-            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-            color: #721c24;
-        }
-        
-        .alert-info {
-            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-            color: #0c5460;
-        }
-        
-        .form-control {
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
-        }
-        
-        .form-label {
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-        
-        .empty-state i {
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
         }
         
         .stats-badge {
             background: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+            color: var(--text-light);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Search and Filter Section */
+        .search-filter-section {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 20px var(--shadow-light);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            border: 1px solid var(--border-light);
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box .form-control {
+            padding-left: 3rem;
+            border-radius: var(--radius-pill);
+            border: 2px solid var(--border-color);
+            transition: all var(--transition-normal);
+        }
+        
+        .search-box .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+            transform: translateY(-1px);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            z-index: 10;
+        }
+        
+        .filter-dropdown {
+            border-radius: var(--radius-md);
+            border: 2px solid var(--border-color);
+            transition: all var(--transition-normal);
+        }
+        
+        .filter-dropdown:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 20px var(--shadow-light);
+            transition: all var(--transition-normal);
+            background: var(--bg-primary);
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px var(--shadow-medium);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--text-light);
+            border: none;
+            padding: var(--spacing-lg);
             font-weight: 600;
         }
         
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: center;
+        /* Tables */
+        .table-container {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 4px 20px var(--shadow-light);
+            background: var(--bg-primary);
+        }
+        
+        .table {
+            margin-bottom: 0;
+            background: var(--bg-primary);
+        }
+        
+        .table th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--text-light);
+            font-weight: 600;
+            border: none;
+            padding: var(--spacing-lg);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        
+        .table th:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+        }
+        
+        .table th.sortable::after {
+            content: '↕';
+            margin-left: var(--spacing-sm);
+            opacity: 0.5;
+            transition: opacity var(--transition-normal);
+        }
+        
+        .table th.sortable:hover::after {
+            opacity: 1;
+        }
+        
+        .table th.sort-asc::after {
+            content: '↑';
+            opacity: 1;
+        }
+        
+        .table th.sort-desc::after {
+            content: '↓';
+            opacity: 1;
+        }
+        
+        .table td {
+            padding: var(--spacing-lg);
+            border-color: var(--border-light);
+            vertical-align: middle;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .table tbody tr {
+            transition: all var(--transition-normal);
+        }
+        
+        .table tbody tr:hover {
+            background-color: var(--primary-light);
+            transform: scale(1.01);
+        }
+        
+        /* Buttons */
+        .btn {
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width var(--transition-normal), height var(--transition-normal);
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: var(--text-light);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.4);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: var(--text-light);
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #1e7e34 100%);
+            color: var(--text-light);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #e0a800 100%);
+            color: var(--text-dark);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color) 0%, #c82333 100%);
+            color: var(--text-light);
         }
         
         .btn-sm {
-            padding: 0.5rem 0.75rem;
+            padding: var(--spacing-xs) var(--spacing-sm);
             font-size: 0.875rem;
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
         }
         
-        .modal-content {
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: var(--spacing-xs);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-normal);
             border: none;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            color: var(--text-light);
+            font-size: 0.875rem;
         }
         
-        .modal-header {
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .action-btn.view {
+            background: var(--info-color);
+        }
+        
+        .action-btn.edit {
+            background: var(--warning-color);
+        }
+        
+        .action-btn.delete {
+            background: var(--danger-color);
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-xxl) var(--spacing-xl);
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-lg);
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: var(--spacing-md);
+            color: var(--text-dark);
+        }
+        
+        /* Pagination */
+        .pagination {
+            justify-content: center;
+            margin-top: var(--spacing-xl);
+        }
+        
+        .page-link {
+            border: none;
+            color: var(--primary-color);
+            border-radius: var(--radius-md);
+            margin: 0 var(--spacing-xs);
+            transition: all var(--transition-normal);
+        }
+        
+        .page-link:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+        
+        .page-item.active .page-link {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            border-radius: 12px 12px 0 0;
+            color: var(--text-light);
         }
         
-        .modal-title {
-            font-weight: 600;
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
         }
         
-        .btn-close {
-            filter: invert(1);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: var(--spacing-xl) 0;
+            }
+            
+            .search-filter-section {
+                padding: var(--spacing-md);
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+            
+            .table-responsive {
+                border-radius: var(--radius-lg);
+                overflow: hidden;
+            }
+            
+            .stats-badge {
+                margin-top: var(--spacing-md);
+            }
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
         }
     </style>
 </head>
 <body>
     <!-- Page Header -->
-    <section class="page-header">
+    <section class="page-header" role="banner">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <h1 class="page-title">
-                        <i class="fas fa-users me-3"></i>ユーザー一覧
+                        <i class="fas fa-users me-3" aria-hidden="true"></i>ユーザー一覧
                     </h1>
-                    <p class="page-subtitle mb-0">
-                        登録されているユーザーの管理と検索
+                    <p class="page-subtitle">
+                        登録されているユーザーの管理と操作を行います
                     </p>
                 </div>
                 <div class="col-md-4 text-md-end">
-                    <div class="d-flex gap-2 justify-content-md-end">
-                        <a href="/users/new" class="btn btn-light">
-                            <i class="fas fa-user-plus me-2"></i>新規作成
-                        </a>
-                        <a href="/users/batch" class="btn btn-outline-light">
-                            <i class="fas fa-users me-2"></i>一括作成
-                        </a>
+                    <div class="stats-badge">
+                        <i class="fas fa-users me-2" aria-hidden="true"></i>
+                        <span th:text="${users.size()}">0</span> ユーザー
                     </div>
                 </div>
             </div>
@@ -218,222 +519,404 @@
     </section>
 
     <!-- Main Content -->
-    <main class="container">
-        <!-- Flash Messages -->
-        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i>
-            <span th:text="${message}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        
-        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            <span th:text="${error}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-
-        <!-- Created User Info -->
-        <div th:if="${createdUser}" class="alert alert-info alert-dismissible fade show" role="alert">
-            <h6 class="alert-heading">
-                <i class="fas fa-user-plus me-2"></i>新規ユーザーが作成されました
-            </h6>
-            <p class="mb-1">
-                <strong>名前:</strong> <span th:text="${createdUser.name}"></span><br>
-                <strong>メール:</strong> <span th:text="${createdUser.email}"></span><br>
-                <strong>ID:</strong> <span th:text="${createdUser.id}"></span>
-            </p>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-
-        <!-- Created Users Info (Batch) -->
-        <div th:if="${createdUsers}" class="alert alert-info alert-dismissible fade show" role="alert">
-            <h6 class="alert-heading">
-                <i class="fas fa-users me-2"></i>一括ユーザー作成が完了しました
-            </h6>
-            <p class="mb-1">
-                <strong>作成数:</strong> <span th:text="${#lists.size(createdUsers)}"></span>人<br>
-                <strong>作成日時:</strong> <span th:text="${#dates.format(#dates.createNow(), 'yyyy/MM/dd HH:mm:ss')}"></span>
-            </p>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-
-        <!-- Stats Card -->
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <div class="feature-icon mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <h5 class="card-title fw-bold">総ユーザー数</h5>
-                        <p class="card-text display-6 fw-bold text-primary" th:text="${userCount}">0</p>
+    <div class="container">
+        <!-- Search and Filter Section -->
+        <div class="search-filter-section fade-in">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                        <input type="text" class="form-control" id="searchInput" 
+                               placeholder="名前、メールアドレスで検索..." 
+                               aria-label="ユーザー検索">
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <div class="feature-icon mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <h5 class="card-title fw-bold">検索結果</h5>
-                        <p class="card-text display-6 fw-bold text-primary" th:text="${#lists.size(users)}">0</p>
+                <div class="col-md-3">
+                    <select class="form-select filter-dropdown" id="sortSelect" aria-label="並び順">
+                        <option value="">並び順を選択</option>
+                        <option value="name-asc">名前（昇順）</option>
+                        <option value="name-desc">名前（降順）</option>
+                        <option value="email-asc">メール（昇順）</option>
+                        <option value="email-desc">メール（降順）</option>
+                        <option value="id-asc">ID（昇順）</option>
+                        <option value="id-desc">ID（降順）</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-grid">
+                        <a href="/users/new" class="btn btn-primary">
+                            <i class="fas fa-plus me-2" aria-hidden="true"></i>新規ユーザー追加
+                        </a>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <div class="feature-icon mx-auto mb-3" style="width: 60px; height: 60px; font-size: 1.5rem;">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <h5 class="card-title fw-bold">最終更新</h5>
-                        <p class="card-text text-muted" th:text="${#dates.format(#dates.createNow(), 'MM/dd HH:mm')}">--</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Search Form -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title mb-3">
-                    <i class="fas fa-search me-2"></i>ユーザー検索
-                </h5>
-                <form th:action="@{/users/search}" method="get" class="row g-3">
-                    <div class="col-md-4">
-                        <label for="searchName" class="form-label">
-                            <i class="fas fa-user me-2"></i>名前で検索
-                        </label>
-                        <input type="text" 
-                               class="form-control" 
-                               id="searchName" 
-                               name="name"
-                               th:value="${searchName}"
-                               placeholder="名前の一部を入力">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="searchEmail" class="form-label">
-                            <i class="fas fa-envelope me-2"></i>メールで検索
-                        </label>
-                        <input type="email" 
-                               class="form-control" 
-                               id="searchEmail" 
-                               name="email"
-                               th:value="${searchEmail}"
-                               placeholder="メールアドレスの一部を入力">
-                    </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <div class="btn-group w-100" role="group">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-search me-2"></i>検索
-                            </button>
-                            <a href="/users" class="btn btn-outline-secondary">
-                                <i class="fas fa-times me-2"></i>クリア
-                            </a>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
 
         <!-- Users Table -->
-        <div class="card">
-            <div class="card-body p-0">
-                <div th:if="${#lists.isEmpty(users)}" class="empty-state">
-                    <i class="fas fa-users fa-4x"></i>
-                    <h4 class="text-muted mb-3">ユーザーが登録されていません</h4>
-                    <p class="text-muted mb-4">最初のユーザーを追加してみましょう</p>
-                    <div class="d-flex gap-2 justify-content-center">
-                        <a href="/users/new" class="btn btn-primary">
-                            <i class="fas fa-user-plus me-2"></i>新規ユーザーを追加
-                        </a>
-                        <a href="/users/batch" class="btn btn-outline-primary">
-                            <i class="fas fa-users me-2"></i>一括作成
-                        </a>
+        <div class="card slide-in">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2" aria-hidden="true"></i>ユーザーリスト
+                        </h5>
                     </div>
-                </div>
-                
-                <div th:if="${!#lists.isEmpty(users)}">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="border-0">ID</th>
-                                    <th scope="col" class="border-0">名前</th>
-                                    <th scope="col" class="border-0">メールアドレス</th>
-                                    <th scope="col" class="border-0 text-center">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="user : ${users}">
-                                    <td th:text="${user.id}">1</td>
-                                    <td th:text="${user.name}">ユーザー名</td>
-                                    <td th:text="${user.email}">user@example.com</td>
-                                    <td class="text-center">
-                                        <div class="action-buttons">
-                                            <a th:href="@{/users/{id}/edit(id=${user.id})}" 
-                                               class="btn btn-sm btn-outline-primary"
-                                               title="編集">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <button type="button" 
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    data-bs-toggle="modal" 
-                                                    th:data-bs-target="'#deleteModal' + ${user.id}"
-                                                    title="削除">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                        
-                                        <!-- Delete Modal -->
-                                        <div class="modal fade" th:id="'deleteModal' + ${user.id}" tabindex="-1">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">
-                                                            <i class="fas fa-exclamation-triangle me-2"></i>
-                                                            ユーザー削除の確認
-                                                        </h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p>以下のユーザーを削除しますか？</p>
-                                                        <div class="alert alert-warning">
-                                                            <ul class="list-unstyled mb-0">
-                                                                <li><strong>名前:</strong> <span th:text="${user.name}"></span></li>
-                                                                <li><strong>メール:</strong> <span th:text="${user.email}"></span></li>
-                                                            </ul>
-                                                        </div>
-                                                        <p class="text-danger mb-0">
-                                                            <i class="fas fa-info-circle me-1"></i>
-                                                            この操作は取り消せません。
-                                                        </p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                            <i class="fas fa-times me-2"></i>キャンセル
-                                                        </button>
-                                                        <form th:action="@{/users/{id}/delete(id=${user.id})}" method="post" style="display: inline;">
-                                                            <button type="submit" class="btn btn-danger">
-                                                                <i class="fas fa-trash me-2"></i>削除
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="col-md-6 text-md-end">
+                        <span class="badge bg-light text-dark" id="filteredCount">
+                            <span th:text="${users.size()}">0</span> 件表示中
+                        </span>
                     </div>
                 </div>
             </div>
+            <div class="card-body p-0">
+                <div class="table-container">
+                    <table class="table table-hover mb-0" id="usersTable">
+                        <thead>
+                            <tr>
+                                <th class="sortable" data-sort="id">ID</th>
+                                <th class="sortable" data-sort="name">名前</th>
+                                <th class="sortable" data-sort="email">メールアドレス</th>
+                                <th>パスワード</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}" th:data-id="${user.id}" class="user-row">
+                                <td th:text="${user.id}">1</td>
+                                <td th:text="${user.name}">ユーザー名</td>
+                                <td th:text="${user.email}">user@example.com</td>
+                                <td>
+                                    <span class="text-muted">••••••••</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn view" 
+                                                th:onclick="'viewUser(' + ${user.id} + ')'"
+                                                aria-label="ユーザー詳細を表示">
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                        <a th:href="@{/users/{id}/edit(id=${user.id})}" 
+                                           class="action-btn edit"
+                                           aria-label="ユーザーを編集">
+                                            <i class="fas fa-edit" aria-hidden="true"></i>
+                                        </a>
+                                        <button class="action-btn delete" 
+                                                th:onclick="'deleteUser(' + ${user.id} + ')'"
+                                                aria-label="ユーザーを削除">
+                                            <i class="fas fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </main>
+
+        <!-- Empty State -->
+        <div th:if="${users.empty()}" class="empty-state fade-in">
+            <i class="fas fa-users" aria-hidden="true"></i>
+            <h3>ユーザーが見つかりません</h3>
+            <p>まだユーザーが登録されていません。最初のユーザーを追加してみましょう。</p>
+            <a href="/users/new" class="btn btn-primary">
+                <i class="fas fa-plus me-2" aria-hidden="true"></i>新規ユーザーを追加
+            </a>
+        </div>
+
+        <!-- Pagination -->
+        <nav th:if="${users.size() > 10}" aria-label="ページナビゲーション">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">前へ</a>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">次へ</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i>削除確認
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="閉じる"></button>
+                </div>
+                <div class="modal-body">
+                    <p>このユーザーを削除してもよろしいですか？</p>
+                    <p class="text-muted">この操作は取り消すことができません。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">
+                        <i class="fas fa-trash me-2" aria-hidden="true"></i>削除
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Global variables
+        let currentSort = '';
+        let currentSortDirection = 'asc';
+        let allUsers = [];
+        let filteredUsers = [];
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeUsers();
+            setupEventListeners();
+            setupSearch();
+            setupSorting();
+        });
+        
+        // Initialize users data
+        function initializeUsers() {
+            const rows = document.querySelectorAll('.user-row');
+            allUsers = Array.from(rows).map(row => ({
+                id: row.querySelector('td:nth-child(1)').textContent,
+                name: row.querySelector('td:nth-child(2)').textContent,
+                email: row.querySelector('td:nth-child(3)').textContent,
+                element: row
+            }));
+            filteredUsers = [...allUsers];
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search input
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', debounce(filterUsers, 300));
+            
+            // Sort select
+            const sortSelect = document.getElementById('sortSelect');
+            sortSelect.addEventListener('change', handleSortChange);
+            
+            // Table headers
+            document.querySelectorAll('.sortable').forEach(header => {
+                header.addEventListener('click', () => handleHeaderSort(header));
+            });
+        }
+        
+        // Setup search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                filterUsers(query);
+            });
+        }
+        
+        // Setup sorting functionality
+        function setupSorting() {
+            document.querySelectorAll('.sortable').forEach(header => {
+                header.addEventListener('click', function() {
+                    const sortField = this.dataset.sort;
+                    toggleSort(sortField);
+                    updateSortIndicators(sortField);
+                    sortUsers();
+                });
+            });
+        }
+        
+        // Filter users
+        function filterUsers(query = '') {
+            const searchInput = document.getElementById('searchInput');
+            query = query || searchInput.value.toLowerCase();
+            
+            filteredUsers = allUsers.filter(user => 
+                user.name.toLowerCase().includes(query) ||
+                user.email.toLowerCase().includes(query) ||
+                user.id.toString().includes(query)
+            );
+            
+            updateTable();
+            updateFilteredCount();
+        }
+        
+        // Sort users
+        function sortUsers() {
+            if (!currentSort) return;
+            
+            filteredUsers.sort((a, b) => {
+                let aValue = a[currentSort];
+                let bValue = b[currentSort];
+                
+                // Handle numeric sorting for ID
+                if (currentSort === 'id') {
+                    aValue = parseInt(aValue);
+                    bValue = parseInt(bValue);
+                } else {
+                    aValue = aValue.toLowerCase();
+                    bValue = bValue.toLowerCase();
+                }
+                
+                if (currentSortDirection === 'asc') {
+                    return aValue > bValue ? 1 : -1;
+                } else {
+                    return aValue < bValue ? 1 : -1;
+                }
+            });
+            
+            updateTable();
+        }
+        
+        // Toggle sort direction
+        function toggleSort(field) {
+            if (currentSort === field) {
+                currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort = field;
+                currentSortDirection = 'asc';
+            }
+        }
+        
+        // Update sort indicators
+        function updateSortIndicators(activeField) {
+            document.querySelectorAll('.sortable').forEach(header => {
+                header.classList.remove('sort-asc', 'sort-desc');
+                if (header.dataset.sort === activeField) {
+                    header.classList.add(`sort-${currentSortDirection}`);
+                }
+            });
+        }
+        
+        // Update table display
+        function updateTable() {
+            const tbody = document.querySelector('#usersTable tbody');
+            tbody.innerHTML = '';
+            
+            filteredUsers.forEach(user => {
+                const row = user.element.cloneNode(true);
+                tbody.appendChild(row);
+            });
+            
+            // Re-attach event listeners
+            setupRowEventListeners();
+        }
+        
+        // Update filtered count
+        function updateFilteredCount() {
+            const countElement = document.getElementById('filteredCount');
+            countElement.textContent = `${filteredUsers.length} 件表示中`;
+        }
+        
+        // Setup row event listeners
+        function setupRowEventListeners() {
+            document.querySelectorAll('.user-row').forEach(row => {
+                row.addEventListener('click', function(e) {
+                    if (!e.target.closest('.action-buttons')) {
+                        const userId = this.dataset.id;
+                        viewUser(userId);
+                    }
+                });
+            });
+        }
+        
+        // Handle sort change from dropdown
+        function handleSortChange(event) {
+            const value = event.target.value;
+            if (!value) return;
+            
+            const [field, direction] = value.split('-');
+            currentSort = field;
+            currentSortDirection = direction;
+            
+            updateSortIndicators(field);
+            sortUsers();
+        }
+        
+        // Handle header sort
+        function handleHeaderSort(header) {
+            const field = header.dataset.sort;
+            toggleSort(field);
+            updateSortIndicators(field);
+            sortUsers();
+        }
+        
+        // View user details
+        function viewUser(userId) {
+            // Add loading animation
+            const button = event.target.closest('.action-btn');
+            const originalContent = button.innerHTML;
+            button.innerHTML = '<span class="loading-spinner"></span>';
+            
+            // Simulate loading
+            setTimeout(() => {
+                window.location.href = `/users/${userId}`;
+            }, 500);
+        }
+        
+        // Delete user
+        function deleteUser(userId) {
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+            
+            document.getElementById('confirmDelete').onclick = function() {
+                // Add loading animation
+                this.innerHTML = '<span class="loading-spinner me-2"></span>削除中...';
+                this.disabled = true;
+                
+                // Simulate deletion
+                setTimeout(() => {
+                    window.location.href = `/users/${userId}/delete`;
+                }, 1000);
+            };
+        }
+        
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                if (modal) modal.hide();
+            }
+        });
+        
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html> 
