@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="効率的で安全なユーザー管理を実現するモダンなWebアプリケーション">
-    <meta name="theme-color" content="#0066cc">
-    <title th:text="${title} ? ${title} + ' - ユーザー管理システム' : 'ユーザー管理システム'">ユーザー管理システム</title>
+    <meta name="description" content="株式会社オーミック - 効率的で安全なユーザー管理を実現するモダンなWebアプリケーション">
+    <meta name="theme-color" content="#1e3a8a">
+    <title th:text="${title} ? ${title} + ' - オーミック ユーザー管理システム' : 'オーミック ユーザー管理システム'">オーミック ユーザー管理システム</title>
     
     <!-- Preload critical resources -->
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style">
@@ -19,34 +19,36 @@
     
     <style>
         :root {
-            /* Light theme colors */
-            --primary-color: #0066cc;
-            --primary-dark: #004499;
-            --primary-light: #e6f0ff;
-            --secondary-color: #f8f9fa;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --info-color: #17a2b8;
+            /* オーミックブランドカラー */
+            --primary-color: #1e3a8a;
+            --primary-dark: #1e40af;
+            --primary-light: #dbeafe;
+            --secondary-color: #f8fafc;
+            --accent-color: #f59e0b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
             
             /* Text colors */
-            --text-dark: #333333;
-            --text-muted: #666666;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
             --text-light: #ffffff;
             
             /* Background colors */
             --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-dark: #2c3e50;
+            --bg-secondary: #f8fafc;
+            --bg-dark: #0f172a;
+            --bg-gradient: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
             
             /* Border colors */
-            --border-color: #e0e0e0;
-            --border-light: #f0f0f0;
+            --border-color: #e2e8f0;
+            --border-light: #f1f5f9;
             
             /* Shadow colors */
-            --shadow-light: rgba(0, 0, 0, 0.08);
-            --shadow-medium: rgba(0, 0, 0, 0.12);
-            --shadow-heavy: rgba(0, 0, 0, 0.2);
+            --shadow-light: rgba(30, 58, 138, 0.08);
+            --shadow-medium: rgba(30, 58, 138, 0.12);
+            --shadow-heavy: rgba(30, 58, 138, 0.2);
             
             /* Spacing */
             --spacing-xs: 0.25rem;
@@ -71,17 +73,17 @@
         
         /* Dark theme */
         [data-theme="dark"] {
-            --primary-color: #4dabf7;
-            --primary-dark: #1976d2;
-            --primary-light: #e3f2fd;
-            --secondary-color: #2d3748;
-            --text-dark: #e2e8f0;
-            --text-muted: #a0aec0;
-            --bg-primary: #1a202c;
-            --bg-secondary: #2d3748;
-            --bg-dark: #171923;
-            --border-color: #4a5568;
-            --border-light: #2d3748;
+            --primary-color: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --primary-light: #1e3a8a;
+            --secondary-color: #1e293b;
+            --text-dark: #f1f5f9;
+            --text-muted: #94a3b8;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-dark: #020617;
+            --border-color: #334155;
+            --border-light: #1e293b;
             --shadow-light: rgba(0, 0, 0, 0.3);
             --shadow-medium: rgba(0, 0, 0, 0.4);
             --shadow-heavy: rgba(0, 0, 0, 0.6);
@@ -127,11 +129,12 @@
         
         /* Navigation */
         .navbar {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            background: var(--bg-gradient);
             box-shadow: 0 4px 20px var(--shadow-medium);
             padding: var(--spacing-md) 0;
             transition: all var(--transition-normal);
             backdrop-filter: blur(10px);
+            border-bottom: 3px solid var(--accent-color);
         }
         
         .navbar-brand {
@@ -140,10 +143,26 @@
             color: var(--text-light) !important;
             text-decoration: none;
             transition: transform var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
         }
         
         .navbar-brand:hover {
             transform: scale(1.05);
+        }
+        
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-weight: bold;
+            font-size: 1.2rem;
         }
         
         .navbar-nav .nav-link {
@@ -204,6 +223,7 @@
             transition: all var(--transition-normal);
             background: var(--bg-primary);
             overflow: hidden;
+            border-left: 4px solid var(--primary-color);
         }
         
         .card:hover {
@@ -212,7 +232,7 @@
         }
         
         .card-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            background: var(--bg-gradient);
             color: var(--text-light);
             border: none;
             padding: var(--spacing-lg);
@@ -249,13 +269,13 @@
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            background: var(--bg-gradient);
             color: var(--text-light);
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.4);
+            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.4);
         }
         
         .btn-outline-primary {
@@ -270,6 +290,16 @@
             transform: translateY(-2px);
         }
         
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #d97706 100%);
+            color: var(--text-light);
+        }
+        
+        .btn-accent:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+        
         /* Tables */
         .table {
             border-radius: var(--radius-lg);
@@ -279,7 +309,7 @@
         }
         
         .table th {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            background: var(--bg-gradient);
             color: var(--text-light);
             font-weight: 600;
             border: none;
@@ -308,6 +338,7 @@
             padding: var(--spacing-lg);
             margin: var(--spacing-md);
             animation: slideInDown 0.5s ease;
+            border-left: 4px solid;
         }
         
         @keyframes slideInDown {
@@ -322,27 +353,27 @@
         }
         
         .alert-success {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-            color: #155724;
-            border-left: 4px solid var(--success-color);
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+            border-left-color: var(--success-color);
         }
         
         .alert-danger {
-            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-            color: #721c24;
-            border-left: 4px solid var(--danger-color);
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            border-left-color: var(--danger-color);
         }
         
         .alert-warning {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-            color: #856404;
-            border-left: 4px solid var(--warning-color);
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+            border-left-color: var(--warning-color);
         }
         
         .alert-info {
-            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-            color: #0c5460;
-            border-left: 4px solid var(--info-color);
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+            border-left-color: var(--info-color);
         }
         
         /* Forms */
@@ -357,7 +388,7 @@
         
         .form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(30, 58, 138, 0.25);
             transform: translateY(-1px);
         }
         
@@ -384,10 +415,46 @@
         
         /* Footer */
         footer {
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #34495e 100%);
+            background: var(--bg-gradient);
             color: var(--text-light);
             padding: var(--spacing-xxl) 0;
             margin-top: var(--spacing-xxl);
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-color);
+        }
+        
+        .footer-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color var(--transition-normal);
+        }
+        
+        .footer-links a:hover {
+            color: var(--text-light);
         }
         
         /* Responsive design */
@@ -425,7 +492,7 @@
         /* High contrast mode support */
         @media (prefers-contrast: high) {
             :root {
-                --primary-color: #000080;
+                --primary-color: #1e3a8a;
                 --text-dark: #000000;
                 --border-color: #000000;
             }
@@ -449,7 +516,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark" role="navigation" aria-label="メインナビゲーション">
         <div class="container">
             <a class="navbar-brand" href="/" aria-label="ホームページ">
-                <i class="fas fa-users me-2" aria-hidden="true"></i>ユーザー管理システム
+                <div class="brand-logo">オ</div>
+                オーミック
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
@@ -504,14 +572,30 @@
     <footer class="text-center" role="contentinfo">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 text-md-start">
-                    <h5 class="mb-3">ユーザー管理システム</h5>
+                <div class="col-md-4 text-md-start">
+                    <div class="footer-brand">
+                        <div class="brand-logo d-inline-block me-2">オ</div>
+                        株式会社オーミック
+                    </div>
                     <p class="mb-0">効率的なユーザー管理を実現するSpring Bootアプリケーション</p>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-0">
+                <div class="col-md-4">
+                    <h6 class="mb-3">サービス</h6>
+                    <ul class="footer-links">
+                        <li><a href="#">ユーザー管理システム</a></li>
+                        <li><a href="#">Webアプリケーション開発</a></li>
+                        <li><a href="#">システムコンサルティング</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <h6 class="mb-3">お問い合わせ</h6>
+                    <ul class="footer-links">
+                        <li><a href="mailto:info@omik.co.jp">info@omik.co.jp</a></li>
+                        <li><a href="tel:+81-3-1234-5678">03-1234-5678</a></li>
+                    </ul>
+                    <p class="mb-0 mt-3">
                         <i class="fas fa-code me-1" aria-hidden="true"></i>
-                        &copy; 2024 ユーザー管理システム. All rights reserved.
+                        &copy; 2024 株式会社オーミック. All rights reserved.
                     </p>
                 </div>
             </div>
